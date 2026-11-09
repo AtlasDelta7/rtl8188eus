@@ -1,3 +1,28 @@
+## Fork note: builds on Linux 6.13 – 6.18+
+
+This fork adds compatibility fixes so the driver compiles on current kernels
+(tested on **Raspberry Pi OS 6.18.60+rpt-rpi-v6** on an original Raspberry Pi 1, and
+test-built on 6.17). Every change is wrapped in a kernel-version check, so older
+kernels build the same code as before.
+
+| Kernel | Change | Fix |
+|---|---|---|
+| 6.2+ | `del_timer_sync()` renamed | uses `timer_delete_sync()` |
+| 6.13+ | `set_monitor_channel` gained a `net_device` argument | argument added |
+| 6.14+ | `get_tx_power` gained `link_id` | argument added |
+| 6.15+ | `EXTRA_CFLAGS` no longer read by kbuild (headers not found) | Makefiles use `ccflags-y` / `ldflags-y` |
+| 6.16+ | `from_timer()` replaced | uses `timer_container_of()` |
+| 6.17+ | `set_wiphy_params`, `set_tx_power`, `get_tx_power` gained `radio_idx` | argument added |
+
+Version boundaries follow mainline Linux. Some distro kernels (e.g. Ubuntu's 6.8)
+backport newer Wi-Fi APIs and may still need adjusting.
+
+AP (hotspot) mode works with `hostapd`. NetworkManager's built-in hotspot did not
+work reliably with this driver in testing. Used in
+[pi1-offline-wiki](https://github.com/AtlasDelta7/pi1-offline-wiki).
+
+---
+
 ## rtl8188eus v5.3.9
 
 
